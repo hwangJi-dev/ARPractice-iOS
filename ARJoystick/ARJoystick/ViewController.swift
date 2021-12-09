@@ -91,18 +91,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let image5 = UIImage(named: "img4")
         let image6 = UIImage(named: "img5")
         
-        let firstFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
-        let secondFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
-        let thirdFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
-        let fourthFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
-        let fifthFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
-        let sixthFrame = SCNNode(geometry: SCNPlane(width: 0.05, height: 0.05))
+        let firstFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
+        let secondFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
+        let thirdFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
+        let fourthFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
+        let fifthFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
+        let sixthFrame = SCNNode(geometry: SCNPlane(width: 0.3, height: 0.3))
         
-        secondFrame.position.x = firstFrame.position.x + 0.1
-        thirdFrame.position.x = secondFrame.position.x + 0.1
-        fourthFrame.position.x = thirdFrame.position.x + 0.1
-        fifthFrame.position.x = firstFrame.position.x - 0.1
-        sixthFrame.position.x = fifthFrame.position.x - 0.1
+//        secondFrame.position.x = firstFrame.position.x + 0.1
+//        thirdFrame.position.x = secondFrame.position.x + 0.1
+//        fourthFrame.position.x = thirdFrame.position.x + 0.1
+//        fifthFrame.position.x = firstFrame.position.x - 0.1
+//        sixthFrame.position.x = fifthFrame.position.x - 0.1
         
         firstFrame.geometry?.firstMaterial?.diffuse.contents = image
         secondFrame.geometry?.firstMaterial?.diffuse.contents = image2
@@ -111,12 +111,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         fifthFrame.geometry?.firstMaterial?.diffuse.contents = image5
         sixthFrame.geometry?.firstMaterial?.diffuse.contents = image6
         
-        self.sceneView.scene.rootNode.addChildNode(firstFrame)
-        self.sceneView.scene.rootNode.addChildNode(secondFrame)
-        self.sceneView.scene.rootNode.addChildNode(thirdFrame)
-        self.sceneView.scene.rootNode.addChildNode(fourthFrame)
-        self.sceneView.scene.rootNode.addChildNode(fifthFrame)
-        self.sceneView.scene.rootNode.addChildNode(sixthFrame)
+//          var nodes = [SCNNode]()
+        let nodes = [firstFrame, secondFrame, thirdFrame, fourthFrame, fifthFrame, sixthFrame]
+//        self.sceneView.scene.rootNode.addChildNode(firstFrame)
+//        self.sceneView.scene.rootNode.addChildNode(secondFrame)
+//        self.sceneView.scene.rootNode.addChildNode(thirdFrame)
+//        self.sceneView.scene.rootNode.addChildNode(fourthFrame)
+//        self.sceneView.scene.rootNode.addChildNode(fifthFrame)
+//        self.sceneView.scene.rootNode.addChildNode(sixthFrame)
+ 
+        for i in 0...nodes.count - 1 {
+//            let node = createSphereNode(withRadius: 0.05, color: .yellow)
+//            nodes.append(node)
+            nodes[i].position = SCNVector3(0,0,-1 * 1 / (i + 1))
+//            nodes[i].rotate(by: SCNQuaternion(-1 * 1 / (i + 1), -2 / (i + 1), 0, 0), aroundTarget: SCNVector3(0,0,0))
+            self.sceneView.scene.rootNode.addChildNode(nodes[i])
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
+            self.arrangeNode(nodes: nodes)
+        }
     }
     
     func setupSKViewScene() {
@@ -127,6 +141,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //        sceneView.showsFPS = true
         //        sceneView.showsNodeCount = true
         //        sceneView.showsPhysics = true
+    }
+    
+    func createSphereNode(withRadius radius: CGFloat, color: UIColor) -> SCNNode {
+        let geometry = SCNSphere(radius: radius)
+        geometry.firstMaterial?.diffuse.contents = color
+        let sphereNode = SCNNode(geometry: geometry)
+        return sphereNode
+    }
+    
+    func arrangeNode(nodes:[SCNNode]) {
+        
+        let radius:CGFloat = 1;
+        
+        let angleStep = 2.0 * CGFloat.pi / CGFloat(nodes.count)
+        
+        var count:Int = 0
+        
+        for node in nodes {
+            let xPos:CGFloat = CGFloat(self.sceneView.pointOfView?.position.x ?? 0) + CGFloat(cosf(Float(angleStep) * Float(count))) * (radius - 0)
+            let zPos:CGFloat = CGFloat(self.sceneView.pointOfView?.position.z ?? 0) + CGFloat(sinf(Float(angleStep) * Float(count))) * (radius - 0)
+            
+            node.position = SCNVector3(xPos, 0, zPos)
+            
+            count = count + 1
+        }
     }
     
     // MARK: - ARSCNViewDelegate
