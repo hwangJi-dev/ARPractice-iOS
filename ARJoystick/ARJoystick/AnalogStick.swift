@@ -113,12 +113,10 @@ open class AnalogJoystickComponent: SKSpriteNode {
 
 //MARK: - AnalogJoystickSubstrate
 open class AnalogJoystickSubstrate: AnalogJoystickComponent {
-    // coming soon...
 }
 
 //MARK: - AnalogJoystickStick
 open class AnalogJoystickStick: AnalogJoystickComponent {
-    // coming soon...
 }
 
 //MARK: - AnalogJoystick

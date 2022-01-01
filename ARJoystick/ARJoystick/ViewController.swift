@@ -31,7 +31,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = true
         
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/tube.scn")!
+        let scene = SCNScene(named: Constants.tubeScenePath)!
         tubeNode = scene.rootNode.childNode(withName: Constants.tubeNodeName, recursively: false)!
         
         // Set the scene to the view
